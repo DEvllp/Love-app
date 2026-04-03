@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do You Love Me? 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        body.zoomed {
+            transform: scale(1.3);
+        }
+
+        .container {
+            text-align: center;
+            z-index: 10;
+            padding: 20px;
+            transition: all 0.5s ease;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInDown 1s ease-out;
+            transition: all 0.5s ease;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            transition: all 0.5s ease;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-no {
+            background: #ff6b6b;
+            color: white;
+            z-index: 20;
+        }
+
+        .btn-no:hover {
+            transform: scale(1.05);
+            background: #ff5252;
+        }
+
+        .btn-yes {
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            position: relative;
+            animation: pulse 2s infinite;
+            z-index: 15;
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-yes.big {
+            padding: 25px 60px;
+            font-size: 1.8rem;
+            animation: pulseBig 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 87, 108, 0.7); }
+            50% { box-shadow: 0 0 0 20px rgba(245, 87, 108, 0); }
+        }
+
+        @keyframes pulseBig {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 87, 108, 0.9); }
+            50% { box-shadow: 0 0 0 30px rgba(245, 87, 108, 0); }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .heart {
+            position: absolute;
+            color: #ff6b9d;
+            font-size: 24px;
+            animation: float 4s ease-in infinite;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: white;
+            padding: 50px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            z-index: 100;
+            animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            min-width: 300px;
+        }
+
+        @keyframes popIn {
+            to {
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .success-message h2 {
+            color: #e91e63;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .success-message .sub-text {
+            color: #666;
+            font-size: 1.3rem;
+            margin-top: 10px;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            z-index: 99;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: gold;
+            border-radius: 50%;
+            animation: sparkle 1s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes sparkle {
+            0% {
+                transform: translate(0, 0) scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .floating-hearts-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .emoji-bounce {
+            display: inline-block;
+            animation: bounce 0.6s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0) scale(1); }
+            to { transform: translateY(-15px) scale(1.2); }
+        }
+
+        .heart-burst {
+            position: absolute;
+            font-size: 30px;
+            animation: burst 1s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes burst {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--bx), var(--by)) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .zoom-transition {
+            animation: zoomIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes zoomIn {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); }
+            100% { transform: scale(1.3); }
+        }
+
+        .really-love-text {
+            animation: fadeInScale 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-hearts-bg" id="floatingHearts"></div>
+    
+    <div class="container" id="container">
+        <h1 id="mainText">Do you love me? 🥺💕</h1>
+        <div class="button-container" id="buttonContainer">
+            <button class="btn btn-no" id="noBtn" onclick="handleNo()">No 😢</button>
+            <button class="btn btn-yes" id="yesBtn" onclick="handleYes()">Ah 💕</button>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="success-message" id="successMessage">
+        <h2>I know it babe 🥹🫀</h2>
+        <div class="sub-text">Yaaay! <span class="emoji-bounce">💖</span></div>
+    </div>
+
+    <script>
+        let yesBtn = document.getElementById('yesBtn');
+        let noBtn = document.getElementById('noBtn');
+        let mainText = document.getElementById('mainText');
+        let body = document.body;
+        let clickStage = 0; // 0 = initial, 1 = zoomed/really love, 2 = final message
+        let noClickCount = 0;
+
+        // Create floating hearts in background
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = ['💕', '💖', '💗', '💓', '💝'][Math.floor(Math.random() * 5)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            document.getElementById('floatingHearts').appendChild(heart);
+            
+            setTimeout(() => heart.remove(), 6000);
+        }
+
+        setInterval(createFloatingHeart, 800);
+
+        // Handle No button - make it run away
+        function handleNo() {
+            noClickCount++;
+            const x = (Math.random() - 0.5) * 300;
+            const y = (Math.random() - 0.5) * 300;
+            noBtn.style.transform = `translate(${x}px, ${y}px)`;
+            
+            // Make yes button bigger based on stage
+            if (clickStage === 0) {
+                yesBtn.style.transform = `scale(${1 + noClickCount * 0.3})`;
+            } else if (clickStage === 1) {
+                yesBtn.style.transform = `scale(${1.3 + noClickCount * 0.2})`;
+            }
+            
+            // Add sparkle effect
+            createSparkles(noBtn);
+        }
+
+        // Handle Yes button - two stage process
+        function handleYes() {
+            if (clickStage === 0) {
+                // First click - Zoom in and change question
+                firstStage();
+            } else if (clickStage === 1) {
+                // Second click - Show final message
+                finalStage();
+            }
+        }
+
+        function firstStage() {
+            clickStage = 1;
+            
+            // Zoom the screen
+            body.classList.add('zoomed');
+            body.classList.add('zoom-transition');
+            
+            // Change text with animation
+            mainText.style.opacity = '0';
+            setTimeout(() => {
+                mainText.innerHTML = 'Do you <span style="color:#ff6b9d">really</span> love me? 🥺💗';
+                mainText.classList.add('really-love-text');
+                mainText.style.opacity = '1';
+            }, 300);
+            
+            // Make button bigger and more attractive
+            yesBtn.classList.add('big');
+            yesBtn.innerHTML = 'Ah 💕✨';
+            
+            // Hide no button with fade
+            noBtn.style.opacity = '0';
+            noBtn.style.pointerEvents = 'none';
+            
+            // Create burst of hearts
+            for(let i = 0; i < 10; i++) {
+                setTimeout(createFloatingHeart, i * 100);
+            }
+            
+            // Play subtle sound
+            playSound(440, 0.2); // A4 note
+        }
+
+        function finalStage() {
+            clickStage = 2;
+            
+            // Show success message
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // Create massive heart burst effect
+            createHeartBurst();
+            
+            // Create continuous floating hearts
+            for(let i = 0; i < 30; i++) {
+                setTimeout(createFloatingHeart, i * 150);
+            }
+            
+            // Play victory sound
+            playVictorySound();
+        }
+
+        function createSparkles(element) {
+            const rect = element.getBoundingClientRect();
+            for(let i = 0; i < 8; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = rect.left + rect.width/2 + 'px';
+                sparkle.style.top = rect.top + rect.height/2 + 'px';
+                const angle = (i / 8) * Math.PI * 2;
+                const distance = 50 + Math.random() * 50;
+                sparkle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+                sparkle.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+                document.body.appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 1000);
+            }
+        }
+
+        function createHeartBurst() {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            const emojis = ['💕', '💖', '💗', '💓', '🥹', '🫀', '✨', '💖'];
+            
+            for(let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart-burst';
+                    heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                    heart.style.left = centerX + 'px';
+                    heart.style.top = centerY + 'px';
+                    const angle = (Math.random() * Math.PI * 2);
+                    const distance = 100 + Math.random() * 400;
+                    heart.style.setProperty('--bx', Math.cos(angle) * distance + 'px');
+                    heart.style.setProperty('--by', Math.sin(angle) * distance + 'px');
+                    heart.style.fontSize = (20 + Math.random() * 30) + 'px';
+                    document.body.appendChild(heart);
+                    setTimeout(() => heart.remove(), 1000);
+                }, i * 40);
+            }
+        }
+
+        function playSound(frequency, duration) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(ctx.destination);
+                oscillator.frequency.value = frequency;
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+                oscillator.start(ctx.currentTime);
+                oscillator.stop(ctx.currentTime + duration);
+            } catch(e) {
+                console.log('Audio not supported');
+            }
+        }
+
+        function playVictorySound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 (major chord)
+                
+                notes.forEach((freq, index) => {
+                    const oscillator = ctx.createOscillator();
+                    const gainNode = ctx.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(ctx.destination);
+                    oscillator.frequency.value = freq;
+                    oscillator.type = 'sine';
+                    const time = ctx.currentTime + index * 0.15;
+                    gainNode.gain.setValueAtTime(0, time);
+                    gainNode.gain.linearRampToValueAtTime(0.3, time + 0.05);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, time + 0.4);
+                    oscillator.start(time);
+                    oscillator.stop(time + 0.4);
+                });
+            } catch(e) {
+                console.log('Audio not supported');
+            }
+        }
+
+        // Close on overlay click
+        document.getElementById('overlay').onclick = function() {
+            this.style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        };
+    </script>
+</body>
+</html>
